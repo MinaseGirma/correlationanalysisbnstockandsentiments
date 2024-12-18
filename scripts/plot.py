@@ -33,6 +33,7 @@ def plot_stock_data(df, date_column='date', stock_value_column='stock_value', ti
 
     plt.tight_layout()
     plt.show()
+
 def plot_publication_frequency(df, date_column='date'):
     """
     Plots the publication frequency of articles over time.
@@ -115,4 +116,86 @@ def plot_sentiment_by_publisher(df, publisher_column, sentiment_column, top_n=10
     plt.xticks(rotation=45)
     plt.legend(title="Sentiment")
     plt.tight_layout()
+    plt.show()
+
+def plot_stock_returns(df, stock_columns, figsize=(12, 6)):
+    plt.figure(figsize=figsize)
+
+    # Plot returns for each stock
+    for column in stock_columns:
+        # Extract stock symbol from column name (e.g., 'AAPL_Return' -> 'AAPL')
+        stock_symbol = column.split('_')[0]
+        plt.plot(df['Date'], df[column], label=stock_symbol, alpha=0.7)
+
+    # Customize the plot
+    plt.title('Daily Stock Returns Comparison', fontsize=12)
+    plt.xlabel('Date')
+    plt.ylabel('Daily Returns (%)')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_correlation_analysis(correlations, title='Correlation Analysis'):
+    
+    stocks = list(correlations.keys())
+    correlation_values = [stats['correlation'] for stats in correlations.values()]
+    p_values = [stats['p_value'] for stats in correlations.values()]
+
+    fig, ax1 = plt.subplots(figsize=(12, 6))
+
+    # Correlation bars
+    color = 'tab:blue'
+    ax1.set_xlabel('Stocks')
+    ax1.set_ylabel('Correlation', color=color)
+    ax1.bar(stocks, correlation_values, color=color, alpha=0.6, label='Correlation')
+    ax1.tick_params(axis='y', labelcolor=color)
+    ax1.legend(loc='upper left')
+
+    # P-value line
+    ax2 = ax1.twinx()
+    color = 'tab:red'
+    ax2.set_ylabel('P-value', color=color)
+    ax2.plot(stocks, p_values, color=color, marker='o', 
+             linestyle='dashed', linewidth=2, markersize=5, label='P-value')
+    ax2.tick_params(axis='y', labelcolor=color)
+    ax2.legend(loc='upper right')
+
+    fig.tight_layout()
+    plt.title(title)
+    plt.xticks(rotation=45)
+    return fig
+
+
+
+def plot_price_and_ma(data, ticker, indicators):
+    """Plot price and moving averages."""
+    plt.figure(figsize=(14, 7))
+    plt.plot(data.index, data[f'{ticker}_Close'], label=f'{ticker} Close Price')
+    plt.plot(data.index, indicators['SMA50'], label=f'{ticker} 50-Day SMA')
+    plt.plot(data.index, indicators['SMA200'], label=f'{ticker} 200-Day SMA')
+    plt.title(f'{ticker} Close Price and Moving Averages')
+    plt.legend()
+    plt.show()
+
+def plot_rsi(data, ticker, indicators):
+    """Plot RSI indicator."""
+    plt.figure(figsize=(14, 7))
+    plt.plot(data.index, indicators['RSI'], label=f'{ticker} RSI')
+    plt.axhline(70, color='r', linestyle='--')
+    plt.axhline(30, color='r', linestyle='--')
+    plt.title(f'{ticker} Relative Strength Index (RSI)')
+    plt.legend()
+    plt.show()
+
+def plot_macd(data, ticker, indicators):
+    """Plot MACD indicator."""
+    plt.figure(figsize=(14, 7))
+    plt.plot(data.index, indicators['MACD'], label=f'{ticker} MACD')
+    plt.plot(data.index, indicators['MACD_Signal'], label=f'{ticker} MACD Signal')
+    plt.bar(data.index, indicators['MACD_Hist'], label=f'{ticker} MACD Hist', alpha=0.3)
+    plt.title(f'{ticker} MACD')
+    plt.legend()
     plt.show()
