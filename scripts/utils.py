@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def read_csv_file(file_path):
     # Read the CSV file
     data = pd.read_csv(file_path)
@@ -16,3 +17,4 @@ def read_csv_file(file_path):
         'column_names': column_names,
         'row_count': row_count
     }
+
